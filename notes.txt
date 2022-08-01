@@ -1,0 +1,432 @@
+js code -> js engine -> machine code
+
+edge    : chakra
+firefox : spider
+chrome  : v8      fastest js engine(chrome v8) embedded with cpp and this is called NODE
+
+document.getElementById
+
+Node is not a programming language
+Node is not a framework
+
+Node is a runtime env for executing JS code
+
+* Node -> Non blocking Async - Single threaded is used to handle multiple requests *
+- Node Apps are asynchronous by default.
+- While a thread sends request to database to execute a query, the thread will be used to server another client.
+- When the DB prepares the results, it puts a message in EVENT QUEUE.
+- Node is continuously monitoring the QUEUE in background. When it finds an event in the QUEUE it will take the data and process it.
+- This architecture makes node ideal for building applications that include a lot of I/O (disk or network) intensive apps.
+- Can serve more clients without the need of more hardware, thats why Node apps are highly scalable.
+- It should only be used for data intensive and real-time applications
+
+Cons:
+- Node should not be used for CPU intensive apps like video/image processing. These apps require a lot of calculations to be done by CPU
+and few operations that touch the file system or the network.
+- When performing calculations to serve one client, the thread is consumed by that first client and other clients have to wait.
+
+
+Blocking/Sync architecture - Thread will be served to one request at a time
+You will need another Thread to server another request.
+* With this kind of architecture we are not using the resources efficiently. *
+This is the issue with blocking/Sync architecture
+
+Node is a C++ program, it includes chrome's v8 js engine.
+
+var // to declare a variable
+const // to declare a constant
+
+jshint: use take jshint to find best practice
+
+in every module, this below function is called.
+This is default function that will be called.
+
+(function (exports, require, modelue, __filename, __direname) {
+
+})
+
+
+https://nodejs.org/dist/latest-v16.x/docs/api/
+
+path module
+
+---------
+Using placeholders for arg and normal console.logs
+console.log('Total memory: ' + total_mem)
+console.log('Free memory: ' + free_mem)
+
+console.log(`total memory: ${total_mem}`);
+console.log(`Free memory: ${free_mem}`);
+
+
+Node's code functionality is based on concepts of events
+Event is basically a signal has happened in our app.
+
+Classes in Node appear this way "EventEmmitter". First letter and other Words are is caps
+
+Listener is a function that is called when the event is received.
+
+Emitter sends an event like in this case a message "message Logged" and the same message is received in listener which checks the emitted message and responds with log "Listener called"
+
+The order of register and emitter is important. 
+//Register a listener
+emitter.on('message Logged', function () {
+  console.log('Listener called')
+})
+
+// Making a noise, produce something
+// Raise an event
+emitter.emit('message Logged')
+
+when working in classes, you dont need to define function keyword
+class Logger {
+  log(message) {
+  console.log(message);
+}
+
+- http server is and example of event emitter.
+- net.html
+net.createServer([options][, connectionListener])
+net.Server is an EventEmmitter
+
+npm i -g npm@5.5.1
+npm i -g npm@8.11.0
+
+
+npm init
+npm init --yes // dont need to enter details again and again
+
+npm list //list dependencies
+
+npm view mongoose
+npm view mongoose dependencies
+npm view mongoose versions
+
+npm outdated
+npm update
+npm i -g npm-check-updates
+npm-check-updates
+ncu
+ncu -u
+npm i
+npm un mongoose
+npm publish
+npm version minor = update npm minor version
+
+EXPRESS documentation : http://expressjs.com/en/4x/api.html
+
+NODE DOCUMENTATION: https://nodejs.org/dist/latest-v16.x/docs/api/
+
+Node.js native addon build tool: https://github.com/nodejs/node-gyp#on-windows
+
+npm i -g nodemon // Make changes live on the server
+npm i joi helmet morgan
+
+const port = process.env.PORT || 3000 //You can provide custom port; export PORT=5000
+// so now the port will be 5000 and if port not provided then it will be 3000
+
+let = use let to define variable which can be changed later
+
+const = constant
+
+#Middleware   http://expressjs.com/en/guide/using-middleware.html
+app.use(express.json());
+app.use(express.urlencoded()); //key=value&key=value
+
+
+(req,res,next)
+after request and response the middleware function "next" will be called
+
+app.use(express.urlencoded({ extended: true })); // this will accept input in ur encoded format as well
+
+Every middleware functionality will be reduce performance; add middleware only to serve your purpose.
+
+app.use(morgan('tiny')); //Format of request in logs
+//enable this in certain situations, because it affects performance
+// not to be used in prod
+GET /api/courses/10 404 39 - 4.923 ms
+
+npm i config debug
+
+export NODE_ENV=development
+export NODE_ENV=production
+
+// DEBUGGER   http://expressjs.com/en/guide/debugging.html
+
+const startup_debugger = require('debug')('app:startup');
+const db_debugger = require('debug')('app:db');
+DEBUG AN app
+export DEBUG=app:startup
+// back to normal mode
+export DEBUG=
+
+Debugger of app and db
+export DEBUG=app:startup,app:db
+
+//Run all Debugger info
+export DEBUG=app:*
+
+//Debug and run the app at the same time
+export DEBUG=app:startup nodemode index.js
+
+Prefer debug module than console.log module
+
+# TEMPLATING ENGINES
+Pug - generate dynamic html
+Mustache
+Ejs
+
+
+#Database Integration  http://expressjs.com/en/guide/database-integration.html
+
+
+# Structring Express Applications -- 
+- Every logical endpoint you should have separate file
+- Every routes you should have separate module/file
+
+
+npm i nodemon joi express json helmet pug debug config morgan
+
+- Asynchronous does not mean concurrent/multithread
+- Single-threaded and non concurrent 
+
+#Call backs
+Call back - is a function that will be called when the result of an Async operation is ready
+
+#Callback Hell/ Christmas tree problem
+get_user(1, (user) => {
+  get_repositories(user.gitHubUsername, (repos) => {
+      get_commits(repo, (commits) => {
+        //code
+    });
+  });
+});
+- We can use replace each anonymous function with a named function. With this the structure of the function can be flattened
+
+Its better to use Promises tha using callback
+
+#Promises
+const p = new Promise((resolve, reject) => {
+  //code
+  resolve(1);
+  reject(new Error('Error message'))
+  });
+
+p.then(result => console.log('Result', result));
+A promise is an object that holds the eventual result of an asynchronous operation. Initially its in the pending state when we create the promise. At this point, it picks up and async operation and that operation can complete successfully or it can fail.
+- It if completes successfully, we saw the promise is resolved or fulfilled.
+- So the state of the promise changes from pending state to resolved state.
+- If the state of the promise changes from pending state to rejected state. So here we use the reject function to return an error to the consumer of this promise.
+
+
+
+#Async/await chapters
+
+#With promises we can use asynchronous operations better. We can achieve 
+
+#Promise is a constructor function which takes 2 parameters: (resolve, reject)
+
+const p = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    // resolve(1);
+  reject(new Error('message'));
+  }, 2000)
+
+});
+
+p .then(result => console.log('Result : ', result))   // To get the result
+  .catch(err => console.log('Error : ', err.message)) // To get the error message, if in case the promise fails
+
+// sample
+get_user(1)
+  .then(user => get_repositories(user.gitHubUsername))
+  .then(repos => get_commits(repos[0]))
+  .then(commits => console.log('Commits : ',commits))
+  ;
+
+-  Whenever you want to reject a promise, its best to use native error object, because it will include the callstack.
+//    Promise.reject(new Error('Reason for error')).catch(err => console.log('Error : ', err))
+
+# Passing all promises at once, threads can run asynchronous
+
+const p1 = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log('Async operation 1');
+    resolve(1);
+  }, 2000);
+})
+
+const p2 = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log('Async operation 2');
+    resolve(2);
+  }, 2000);
+})
+
+Promise.all([p1, p2])
+  .then(result => console.log(result));
+
+# err. message will display only the message and not the complete stack of error
+Promise.all([p1, p2])
+  .then(result => console.log(result))
+  .catch(err => console.error(err.message))
+  ;
+
+# If you want the first promise to respond among all the other promises, so you dont want to use all of them to complete.
+So the first promise which will complete its operation will be returned in promise.
+
+Promise.race([p1, p2])
+  .then(result => console.log(result))
+  .catch(err => console.error(err.message))
+  ;
+
+#Async/Await
+Async and await allows you to write asynchronous code synchronously.
+
+
+
+
+
+
+##Type of TESTS
+
+Unit tests - Tests are performed on a class or multiple classes without external dependencies
+
+Integration tests - Tests are performed on a class or multiple classes with external dependencies
+
+End to End tests - Tests are performed on application using its user-interface
+eg: selenium
+- Very slow
+- Brittle - small change in UI could easily break this tests
+
+
+##Test Pyramid
+
+E2E         - Few tests to check happy path
+Integration - You test integration of your app with external dependencies.
+Unit        - Most of the tests should be in unit tests, easy to write and execute quickly. This tests does not give the overall health of your application
+
+Favor unit tests to E2E tests
+Cover unit tests with integration tests
+Use E2E sparingly
+
+
+##Test Framework
+1. Jasmine  - Matured test framework, it comes with all the features you need in testing framework
+2. Mocha    - Most popular test framework. Plugins - Chai and Sinon
+3. Jest     - Newer framework, wrapper over Jasmine. Built in code coverage.
+
+How many tests is required?
+- The number of unit tests should be greated than equal to the execution paths.
+
+sample jest framework 1:
+test('Our first test', () => {
+  // throw new Error('Something failed')
+  
+})
+// Numbers
+sample jest framework 2:
+test('absolute method - should return positive value if input is positive', () => {
+  const result = lib.absolute(1);
+  expect(result).toBe(1); 
+})
+
+ - https://jestjs.io/docs/using-matchers
+
+- Test Code should be maintainable and clean
+- It shouldnt be ugly and fat
+
+- Tests should neithere be too specific nor to simple
+
+//String or sentences
+describe('greet', () => {
+  it('Should return the greeting message', () => {
+    const result = lib.greet('Ammu');
+    expect(result).toMatch(/Ammu/);     #With Regex
+    expect(result).toContain('Ammu');   #With contains
+  });
+});
+
+- https://jestjs.io/docs/expect#expectarraycontainingarray
+//Arrays
+describe("get_currencies", () => {
+  it("Should return currencies", () => {
+    let arrray_currencies = lib.getCurrencies();
+    expect(arrray_currencies).toContain("EUR");
+    expect(arrray_currencies).toEqual(expect.arrayContaining(['EUR','USD','AUD']))
+  });
+});
+
+//Objects - When objects are compared, the references to the objects in memory is checked and since both are in different addresses; the test fails.The matcher toBe returns fails and hence use toEqual.
+
+// function
+module.exports.getProduct = function(productId) { 
+  return { id: productId, price: 10 };
+
+//test
+toMatchObject also can be used.
+describe("get_product", () => {
+  it("should return product with the given id", () => {
+    const result = lib.getProduct(1);
+    //expect(result).toBe({ id: 1, price: 10 });
+    expect(result).toEqual({ id: 1, price: 10 });
+    expect(result).toMatchObject({ id: 1, price: 10 });
+    expect(result).toHaveProperty( 'id', 1);
+  });
+});
+
+toEqual       - matches the properties of both objects
+toMatchObject - Will check for some of object properties, does not required the entire dictionary to match
+toHaveObject - Will check the properties, watch the way the comparison is declared
+//  expect(result).toHaveProperty( 'id', 1);
+
+// Test Exceptions
+/function
+module.exports.registerUser = function(username) { 
+  if (!username) throw new Error('Username is required.');
+
+  return { id: new Date().getTime(), username: username }
+}
+
+describe("register user", () => {
+  it("should throw an exception if the user is falsy", () => {
+    /*  To throw an falsy username, we can use below values
+    [null, undefined, NaN, '', 0, false] */
+
+    const args = [null, undefined, NaN, "", 0, false];
+    args.forEach((a) => {
+      expect(() => {
+        lib.registerUser(a);
+      }).toThrow();
+    });
+  });
+})
+
+Jest doesnt support parameterized tests, but there are alternative approach like below:
+    const args = [Null, undefined, NaN, '', 0, false]
+    args.forEach(a => {
+      expect(() => { lib.registerUser(a) }).toThrowError("Username is required");
+    });
+  });
+})
+
+Single Assertion Principle - Only single assertion per function in describe()
+
+
+//MOCK functions - Mock the functions userd in notifyCustomer()
+
+const mock_function = jest.fn();
+describe('notify customer', () => {
+  it("should send an email to the customer", () => {
+
+    db.getCustomerSync = jest.fn().mockReturnValue({ email: 'a' });
+    mail.send = jest.fn();
+    
+    lib.notifyCustomer({ customerId: 1 });
+
+    expect(mail.send).toHaveBeenCalled();
+
+    expect(mail.send.mock.calls[0][0]).toBe('a');
+    expect(mail.send.mock.calls[0][1]).toMatch(/order/);
+  });
+});
