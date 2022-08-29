@@ -203,7 +203,7 @@ get_user(1, (user) => {
 });
 - We can use replace each anonymous function with a named function. With this the structure of the function can be flattened
 
-Its better to use Promises tha using callback
+Its better to use Promises than using callback
 
 #Promises
 const p = new Promise((resolve, reject) => {
@@ -283,9 +283,59 @@ Promise.race([p1, p2])
 #Async/Await
 Async and await allows you to write asynchronous code synchronously.
 
+Promise once fulfilled doesnt result in a value. Its void.
+So basically ASYNC/AWAIT are built on top of PROMISES.
+They are wrappers that allows the asynchronous code to look synchronous. 
+- Internally when the JS engine executes the async code as promises, it will convert the below code to below promise.
+// get_user(1)
+//   .then(user => get_repositories(user.gitHubUsername))
+
+- Even though our code looks synchronously, it dosent executes synchronously.
+- When we await the result of this function 
+//    const user = await get_user(1);
+its not really awaiting the result of this function or blocking in synchronously.
+- When the await function is executed, JS engine releases the thread and make it available to other functions.
+- When the get_user function is available, thread will store the result to the "const user" and thread will move to the second line. 
+- Intternally we use promises, but code still runs asynchronously, but it looks and reads synchronously.
+
+- In promise based method, we use catch methods to get any errors.
+
+----- On using ASYNC/AWAIT, we dont have the catch method.
+So for all ASYNC/AWAIT methods we use try/catch blocks.
+
+
+sample:
+async function display_commits() {
+  try {
+    const user = await get_user(1);
+    const repos = await get_repositories(user.gitHubUsername);
+    const commits = await get_commits(repos[0]);
+    console.log(commits)
+  }
+  catch (err) {
+    console.log('Error : ', err.message)
+  }
+}
 
 
 
+
+Check the return value of the function display_commits in async-await.js file.
+
+
+async function display_commits() {
+  try {
+    const user = await get_user(1);
+    const repos = await get_repositories(user.gitHubUsername);
+    const commits = await get_commits(repos[0]);
+    console.log(commits)
+  }
+  catch (err) {
+    console.log('Error : ', err.message)
+  }
+}
+
+display_commits();
 
 
 ##Type of TESTS
@@ -430,3 +480,27 @@ describe('notify customer', () => {
     expect(mail.send.mock.calls[0][1]).toMatch(/order/);
   });
 });
+
+
+Mongo DB - Document based object storage
+
+- Mongoose 
+The schema of the mongo db is defined using mongoose.
+schema types
+ String
+ Number
+ Date
+ Buffer - Binary data
+ Boolean
+ ObjectID
+ Array
+
+- Once we have schema, we compile that into a model.We can create an object based on the class. This object maps to a document in MongoDB 
+
+ ********  first letter being small and other word starts with first letter in caps is a class. Also called as Pascal case
+ courseSchema
+
+
+ ********  entire word is smallcase, this is used for object. This is called CamelCase
+
+ 
